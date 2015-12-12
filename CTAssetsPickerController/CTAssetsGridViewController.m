@@ -41,7 +41,8 @@
 #import "NSBundle+CTAssetsPickerController.h"
 
 
-
+#import "KVNProgress.h"
+#import "AYVibrantButton.h"
 
 NSString * const CTAssetsGridViewCellIdentifier = @"CTAssetsGridViewCellIdentifier";
 NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIdentifier";
@@ -60,6 +61,8 @@ NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIden
 @property (nonatomic, strong) CTAssetsGridViewFooter *footer;
 @property (nonatomic, strong) CTAssetsPickerNoAssetsView *noAssetsView;
 
+@property (strong, nonatomic) AYVibrantButton *buttonSelect;
+@property (assign, nonatomic) BOOL selectMode;
 @property (nonatomic, assign) BOOL didLayoutSubviews;
 
 @end
@@ -169,8 +172,10 @@ NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIden
 {
     self.collectionView.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
     CTAssetsGridView *gridView = [CTAssetsGridView new];
+    [self.collectionView setContentInset:UIEdgeInsetsMake(50, 0, 0, 0)];
     [self.view insertSubview:gridView atIndex:0];
     [self.view setNeedsUpdateConstraints];
+    
 }
 
 - (void)setupButtons
@@ -185,7 +190,53 @@ NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIden
                                          style:UIBarButtonItemStyleDone
                                         target:self.picker
                                         action:@selector(finishPickingAssets:)];
+        
+        self.navigationItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                         style:UIBarButtonItemStylePlain
+                                        target:self.picker
+                                        action:@selector(dismiss:)];
     }
+    if(self.picker.fromPopupTimeline){
+        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight]];
+        effectView.frame = CGRectMake(0, 64, self.view.frame.size.width, 50);
+        [self.view addSubview:effectView];
+        
+        _buttonSelect = [[AYVibrantButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50) style:AYVibrantButtonStyleTranslucent];
+        _buttonSelect.vibrancyEffect = nil;
+        _buttonSelect.text = NSLocalizedString(@"DeselectAll",nil);
+        _buttonSelect.font = [UIFont systemFontOfSize:18.0];
+        _buttonSelect.backgroundColor = [UIColor blackColor];
+        [_buttonSelect addTarget:self action:@selector(touchSelectAll) forControlEvents:UIControlEventTouchUpInside];
+        _selectMode = NO;
+        
+        [effectView addSubview:_buttonSelect];
+    }
+    
+}
+
+- (void)touchSelectAll{
+    [KVNProgress show];
+    if(_selectMode){
+        _selectMode = NO;
+        for (NSUInteger index = 0; index < self.fetchResult.count; index++){
+            [self.picker selectAsset:self.fetchResult[index]];
+        }
+        [KVNProgress dismiss];
+        
+        _buttonSelect.text = NSLocalizedString(@"DeselectAll", nil);
+    }
+    else{
+        _buttonSelect.text = NSLocalizedString(@"SelectAll", nil);
+
+        _selectMode = YES;
+        for (NSUInteger index = 0; index < self.fetchResult.count; index++){
+            [self.picker deselectAsset:self.fetchResult[index]];
+        }
+        [KVNProgress dismiss];
+        
+    }
+     
 }
 
 - (void)setupAssets
