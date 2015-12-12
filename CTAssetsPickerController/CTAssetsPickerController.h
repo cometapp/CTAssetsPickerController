@@ -28,9 +28,6 @@
 #import <UIKit/UIKit.h>
 #import <Photos/Photos.h>
 
-#import "CRTimelineController.h"
-
-
 @protocol CTAssetsPickerControllerDelegate;
 
 /**
@@ -143,7 +140,7 @@
 @property (nonatomic, readonly, strong) UISplitViewController *childSplitViewController;
 
 @property (nonatomic, assign) BOOL fromPopupTimeline;
-@property (strong, nonatomic) CRTimelineController *delegateTimeline;
+@property (strong, nonatomic) id *delegateTimeline;
 /**
  *  @name Managing Selections
  */
