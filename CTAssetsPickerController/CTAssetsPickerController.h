@@ -140,7 +140,7 @@
 @property (nonatomic, readonly, strong) UISplitViewController *childSplitViewController;
 
 @property (nonatomic, assign) BOOL fromPopupTimeline;
-@property (weak, nonatomic) id *delegateTimeline;
+@property (weak, nonatomic) id delegateTimeline;
 /**
  *  @name Managing Selections
  */
