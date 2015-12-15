@@ -61,7 +61,7 @@ NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIden
 @property (nonatomic, strong) CTAssetsGridViewFooter *footer;
 @property (nonatomic, strong) CTAssetsPickerNoAssetsView *noAssetsView;
 
-@property (strong, nonatomic) AYVibrantButton *buttonSelect;
+@property (strong, nonatomic) UIButton *buttonSelect;
 @property (assign, nonatomic) BOOL selectMode;
 @property (nonatomic, assign) BOOL didLayoutSubviews;
 
@@ -172,7 +172,6 @@ NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIden
 {
     self.collectionView.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
     CTAssetsGridView *gridView = [CTAssetsGridView new];
-    [self.collectionView setContentInset:UIEdgeInsetsMake(50, 0, 0, 0)];
     [self.view insertSubview:gridView atIndex:0];
     [self.view setNeedsUpdateConstraints];
     
@@ -198,19 +197,33 @@ NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIden
                                         action:@selector(dismiss:)];
     }
     if(self.picker.fromPopupTimeline){
-        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight]];
-        effectView.frame = CGRectMake(0, 64, self.view.frame.size.width, 50);
-        [self.view addSubview:effectView];
+        [UIView animateWithDuration:0.1 animations:^{
+            [self.collectionView setContentInset:UIEdgeInsetsMake(64 + 42, 0, 0, 0)];
+        }];
         
-        _buttonSelect = [[AYVibrantButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50) style:AYVibrantButtonStyleTranslucent];
-        _buttonSelect.vibrancyEffect = nil;
-        _buttonSelect.text = NSLocalizedString(@"DeselectAll",nil);
-        _buttonSelect.font = [UIFont systemFontOfSize:18.0];
-        _buttonSelect.backgroundColor = [UIColor blackColor];
+//        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight]];
+//        effectView.frame = CGRectMake(0, 64, self.view.frame.size.width, 50);
+//        [self.view addSubview:effectView];
+//
+//        _buttonSelect = [[AYVibrantButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 50) style:AYVibrantButtonStyleTranslucent];
+//        _buttonSelect.vibrancyEffect = nil;
+//        _buttonSelect.text = NSLocalizedString(@"DeselectAll",nil);
+//        _buttonSelect.font = [UIFont systemFontOfSize:18.0];
+//        _buttonSelect.backgroundColor = [UIColor redColor];
+//        [_buttonSelect addTarget:self action:@selector(touchSelectAll) forControlEvents:UIControlEventTouchUpInside];
+//        _selectMode = NO;
+//    
+//        [effectViewaddSubview:_buttonSelect];
+    
+        _buttonSelect = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
+        [_buttonSelect.titleLabel setFont:[UIFont systemFontOfSize:18.0]];
+        [_buttonSelect setTitle:NSLocalizedString(@"DeselectAll", nil) forState:UIControlStateNormal];
+        [_buttonSelect setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_buttonSelect setBackgroundColor:[UIColor colorWithRed:74.f/255.f green:74.f/255.f blue:74.f/255.f alpha:1.0]];
         [_buttonSelect addTarget:self action:@selector(touchSelectAll) forControlEvents:UIControlEventTouchUpInside];
-        _selectMode = NO;
-        
-        [effectView addSubview:_buttonSelect];
+    
+        [self.view addSubview:_buttonSelect];
+
     }
     
 }
@@ -220,18 +233,23 @@ NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIden
     if(_selectMode){
         _selectMode = NO;
         for (NSUInteger index = 0; index < self.fetchResult.count; index++){
-            [self.picker selectAsset:self.fetchResult[index]];
+            PHAsset *asset = self.fetchResult[index];
+            if(![self.picker.selectedAssets containsObject:asset])
+                [self.picker selectAsset:asset];
         }
         [KVNProgress dismiss];
         
-        _buttonSelect.text = NSLocalizedString(@"DeselectAll", nil);
+ //       _buttonSelect.text = NSLocalizedString(@"DeselectAll", nil);
+        [_buttonSelect setTitle:NSLocalizedString(@"DeselectAll", nil) forState:UIControlStateNormal];
     }
     else{
-        _buttonSelect.text = NSLocalizedString(@"SelectAll", nil);
-
+//        _buttonSelect.text = NSLocalizedString(@"SelectAll", nil);
+        [_buttonSelect setTitle:NSLocalizedString(@"SelectAll", nil) forState:UIControlStateNormal];
         _selectMode = YES;
         for (NSUInteger index = 0; index < self.fetchResult.count; index++){
-            [self.picker deselectAsset:self.fetchResult[index]];
+            PHAsset *asset = self.fetchResult[index];
+            if([self.picker.selectedAssets containsObject:asset])
+                [self.picker deselectAsset:asset];
         }
         [KVNProgress dismiss];
         
