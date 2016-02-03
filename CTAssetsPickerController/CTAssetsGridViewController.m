@@ -190,11 +190,13 @@ NSString * const CTAssetsGridViewFooterIdentifier = @"CTAssetsGridViewFooterIden
                                         target:self.picker
                                         action:@selector(finishPickingAssets:)];
         
-        self.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
-                                         style:UIBarButtonItemStylePlain
-                                        target:self.picker
-                                        action:@selector(dismiss:)];
+        if(self.picker.fromPopupTimeline){
+            self.navigationItem.leftBarButtonItem =
+            [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                             style:UIBarButtonItemStylePlain
+                                            target:self.picker
+                                            action:@selector(dismiss:)];
+        }
     }
     if(self.picker.fromPopupTimeline){
         [UIView animateWithDuration:0.1 animations:^{
