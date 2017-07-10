@@ -66,8 +66,8 @@
     self.shadowImageView = shadowImageView;
     [self addSubview:self.shadowImageView];
     
-    UIImage *checkmarkImage = [UIImage ctassetsPickerImageNamed:@"Checkmark"];
-    checkmarkImage = [checkmarkImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *checkmarkImage = [UIImage ctassetsPickerImageNamed:@"selected-friend"];
+//    checkmarkImage = [checkmarkImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *checkmarkImageView = [[UIImageView alloc] initWithImage:checkmarkImage];
     checkmarkImageView.userInteractionEnabled = NO;
     self.checkmarkImageView = checkmarkImageView;

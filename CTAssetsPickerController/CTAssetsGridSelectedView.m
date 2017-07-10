@@ -138,8 +138,8 @@
 {
     if (!self.didSetupConstraints)
     {
-        [self.checkmark autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
-        [self.checkmark autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+        [self.checkmark autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:self withOffset:-15];
+        [self.checkmark autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self withOffset:-15];
         
         self.didSetupConstraints = YES;
     }
