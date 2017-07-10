@@ -115,8 +115,10 @@
     
     if (showsSelectionIndex)
     {
+        
         self.checkmark.hidden = YES;
         self.selectionIndexLabel.hidden = NO;
+        
     }
     else
     {
